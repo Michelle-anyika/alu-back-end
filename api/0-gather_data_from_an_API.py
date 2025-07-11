@@ -1,9 +1,12 @@
 #!/usr/bin/python3
+"""
+Fetches and displays a user's TODO list progress from a public API.
+"""
+
 import requests
 import sys
 
 if __name__ == "__main__":
-    # Get employee ID from command line argument
     if len(sys.argv) != 2:
         print("Usage: ./0-gather_data_from_an_API.py <employee_id>")
         sys.exit(1)
@@ -14,11 +17,9 @@ if __name__ == "__main__":
         print("Employee ID must be an integer")
         sys.exit(1)
 
-    # URLs for user and tasks
     user_url = "https://jsonplaceholder.typicode.com/users/{}".format(employee_id)
     todos_url = "https://jsonplaceholder.typicode.com/todos?userId={}".format(employee_id)
 
-    # Fetch employee data
     user_response = requests.get(user_url)
     if user_response.status_code != 200:
         print("User not found")
@@ -27,16 +28,13 @@ if __name__ == "__main__":
     user_data = user_response.json()
     employee_name = user_data.get("name")
 
-    # Fetch TODO list
     todos_response = requests.get(todos_url)
     todos = todos_response.json()
 
-    # Filter completed tasks
     done_tasks = [task for task in todos if task.get("completed")]
     total_tasks = len(todos)
     number_of_done = len(done_tasks)
 
-    # Print progress
     print("Employee {} is done with tasks({}/{}):".format(employee_name, number_of_done, total_tasks))
     for task in done_tasks:
         print("\t {}".format(task.get("title")))

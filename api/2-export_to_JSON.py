@@ -1,7 +1,11 @@
 #!/usr/bin/python3
+"""
+Exports employee TODO list data in JSON format.
+"""
+
+import json
 import requests
 import sys
-import json
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -21,26 +25,27 @@ if __name__ == "__main__":
     if user_resp.status_code != 200:
         print("User not found")
         sys.exit(1)
+
     user_data = user_resp.json()
     username = user_data.get("username")
 
     todos_resp = requests.get(todos_url)
     if todos_resp.status_code != 200:
-        print("Failed to get todos")
+        print("Failed to retrieve tasks")
         sys.exit(1)
+
     todos = todos_resp.json()
 
-    output = {
-        str(employee_id): [
-            {
-                "task": task["title"],
-                "completed": task["completed"],
-                "username": username
-            } for task in todos
-        ]
-    }
+    tasks = []
+    for task in todos:
+        tasks.append({
+            "task": task.get("title"),
+            "completed": task.get("completed"),
+            "username": username
+        })
 
-    filename = "{}.json".format(employee_id)
-    with open(filename, "w") as json_file:
-        json.dump(output, json_file)
+    data = {str(employee_id): tasks}
+
+    with open("{}.json".format(employee_id), "w") as json_file:
+        json.dump(data, json_file)
 
