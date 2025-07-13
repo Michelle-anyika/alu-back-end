@@ -50,4 +50,3 @@ if __name__ == "__main__":
         sys.exit(1)
     employee_id = sys.argv[1]
     gather_data(employee_id)
-
